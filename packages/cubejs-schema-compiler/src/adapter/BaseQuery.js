@@ -4,6 +4,10 @@
  * @fileoverview BaseQuery class definition.
  * @copyright Cube Dev, Inc.
  * @license Apache-2.0
+ *
+ * Modified from original by Kejing Han - 2026-04-08
+ * Changes: Added FILTER_PARAMS.values() support and findTopLevelFilterForMember method
+ * Original: https://github.com/cube-js/cube
  */
 
 import cronParser from 'cron-parser';
@@ -4981,6 +4985,56 @@ export class BaseQuery {
     }
   }
 
+  static findTopLevelFilterForMember(allFilters, member, aliases) {
+    if (!allFilters) return null;
+    // First: search for matching leaf filter at the top level only
+    for (const filter of allFilters) {
+      if (!filter) continue;
+      if (filter.operator === 'and' || filter.operator === 'or') {
+        continue;
+      }
+      const filterMember = filter.dimension || filter.measure;
+      if (
+        filterMember === member ||
+        (aliases && aliases[filterMember] === member)
+      ) {
+        return filter;
+      }
+    }
+    // Second: check if the filter exists nested inside any and/or group
+    const searchNested = (filter) => {
+      if (!filter) return null;
+      if (filter.operator === 'and' || filter.operator === 'or') {
+        for (const child of (filter.values || [])) {
+          const found = searchNested(child);
+          if (found) return found;
+        }
+        return null;
+      }
+      const filterMember = filter.dimension || filter.measure;
+      if (
+        filterMember === member ||
+        (aliases && aliases[filterMember] === member)
+      ) {
+        return filter;
+      }
+      return null;
+    };
+    for (const filter of allFilters) {
+      if (filter && (filter.operator === 'and' || filter.operator === 'or')) {
+        const found = searchNested(filter);
+        if (found) {
+          throw new UserError(
+            `FILTER_PARAMS values: filter for "${member}" is nested inside a logical group (and/or). ` +
+            `When using FILTER_PARAMS to access filter values, the filter must be placed at the top level of filters, ` +
+            `not inside any and/or combinations.`
+          );
+        }
+      }
+    }
+    return null;
+  }
+
   static findAndSubTreeForFilterGroup(filter, groupMembers, newGroupFilter, aliases) {
     if ((filter.operator === 'and' || filter.operator === 'or') && !filter.values?.length) {
       return null;
@@ -5161,7 +5215,26 @@ export class BaseQuery {
 
                 return `(${BaseQuery.renderFilterParams(filter, [this], allocateParam, newGroupFilter, aliases)})`;
               }
-            })
+            }),
+            values: (index) => {
+              if (!allFilters) {
+                return allocateParam(null);
+              }
+              const groupMember = cubeEvaluator.pathFromArray([cubeNameObj.cube, propertyName]);
+              const valAliases = allFilters
+                .map(v => (v.query && !v.query.safeEvaluateSymbolContext().aliasGathering ? v.query.allBackAliasMembersExceptSegments() : {}))
+                .reduce((a, b) => ({ ...a, ...b }), {});
+              const matchingFilter = BaseQuery.findTopLevelFilterForMember(allFilters, groupMember, valAliases);
+              if (!matchingFilter) {
+                return null;
+              }
+              const filterValues = matchingFilter.valuesArray().filter(v => v != null);
+              if (index === undefined) {
+                return filterValues.map(v => allocateParam(v));
+              }
+              const value = filterValues[index];
+              return value !== undefined ? allocateParam(value) : null;
+            }
           })
         });
       }
