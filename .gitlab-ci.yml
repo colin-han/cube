@@ -22,6 +22,8 @@ variables:
 
 build:
   stage: build
+  tags:
+    - repo-builder
   <<: *cache
   cache:
     key:
@@ -46,6 +48,8 @@ build:
 
 publish:
   stage: publish
+  tags:
+    - repo-builder
   <<: *cache
   dependencies:
     - build
