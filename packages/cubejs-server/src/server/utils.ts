@@ -87,18 +87,56 @@ export function parseYarnLock(): ProjectLock | null {
     'utf8'
   );
 
-  const { type, object } = lockfile.parse(file);
+  // Detect Yarn 4 Berry format (contains __metadata: block)
+  if (file.includes('__metadata:')) {
+    const object: Record<string, { version: string }> = {};
+    // Yarn 4 Berry entries: one or more quoted keys followed by a block with "version: x.y.z"
+    const blockRegex = /^"([^"]+)":\n((?:[ \t]+[^\n]+\n)*)/gm;
+    let match;
+    while ((match = blockRegex.exec(file)) !== null) {
+      const keys = match[1].split(', ');
+      const block = match[2];
+      const versionMatch = block.match(/[ \t]+version:[ \t]+"?([^\n"]+)"?/);
+      if (versionMatch) {
+        for (const key of keys) {
+          // Strip protocol prefix (e.g. "pkg@npm:1.0.0" -> store as "pkg@npm:1.0.0")
+          object[key] = { version: versionMatch[1] };
+        }
+      }
+    }
 
-  if (type === 'success') {
     return {
       resolveVersion: (pkg: string) => {
-        if (pkg in object) {
-          return object[pkg].version;
+        // Match keys that start with "<pkg>@" to handle any version range/protocol suffix
+        const prefix = `${pkg}@`;
+        const found = Object.keys(object).find((k) => k.startsWith(prefix));
+        if (found) {
+          return object[found].version;
         }
 
         return null;
       },
     };
+  }
+
+  try {
+    const { type, object } = lockfile.parse(file);
+
+    if (type === 'success') {
+      return {
+        resolveVersion: (pkg: string) => {
+          const prefix = `${pkg}@`;
+          const found = Object.keys(object).find((k) => k.startsWith(prefix));
+          if (found) {
+            return (object[found] as any).version;
+          }
+
+          return null;
+        },
+      };
+    }
+  } catch (e: any) {
+    internalExceptions(e);
   }
 
   return null;

@@ -470,15 +470,33 @@ export class DevServer {
       res.json({ token });
     }));
 
-    app.use(serveStatic(path.join(__dirname, '../../../playground'), {
-      lastModified: false,
-      etag: false,
-      setHeaders: (res, url) => {
-        if (url.indexOf('/index.html') !== -1) {
-          res.setHeader('Cache-Control', 'no-cache');
-        }
-      }
-    }));
+    if (process.env.CUBEJS_DEBUG_LOCAL) {
+      const p = path.join(__dirname, "../../../../cubejs-playground/build");
+      console.log('Using local playground build from:', p, fs.existsSync(p));
+      app.use(
+        serveStatic(p, {
+          lastModified: false,
+          etag: false,
+          setHeaders: (res, url) => {
+            if (url.indexOf("/index.html") !== -1) {
+              res.setHeader("Cache-Control", "no-cache");
+            }
+          },
+        })
+      );
+    } else {
+      app.use(
+        serveStatic(path.join(__dirname, "../../../playground"), {
+          lastModified: false,
+          etag: false,
+          setHeaders: (res, url) => {
+            if (url.indexOf("/index.html") !== -1) {
+              res.setHeader("Cache-Control", "no-cache");
+            }
+          },
+        })
+      );
+    }
 
     /**
      * The `/playground/test-connection` endpoint request.
