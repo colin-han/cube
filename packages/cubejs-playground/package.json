@@ -84,7 +84,7 @@
     "eslint-config-airbnb": "^18.1.0",
     "eslint-plugin-jsx-a11y": "^6.2.1",
     "eslint-plugin-react": "^7.20.0",
-    "fs-extra": "^8.1.0",
+    "fs-extra": "^9.1.0",
     "graphql": "^15.8.0",
     "jsdom": "^24.0.0",
     "prismjs": "^1.25.0",
