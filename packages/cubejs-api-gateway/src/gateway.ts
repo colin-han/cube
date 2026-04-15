@@ -2400,7 +2400,7 @@ class ApiGateway {
 
     const verifyToken = (auth, secret) => jwt.verify(auth, secret, {
       algorithms: <JWTAlgorithm[] | undefined>options?.algorithms,
-      issuer: options?.issuer,
+      issuer: options?.issuer as string | [string, ...string[]] | undefined,
       audience: options?.audience,
       subject: options?.subject,
     });

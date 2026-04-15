@@ -8,6 +8,7 @@ default:
 variables:
   YARN_CACHE_FOLDER: .yarn-cache
   NPM_REGISTRY: "http://eyeguide-repo.essexlg.com:8081/repository/npm-private/"
+  NPM_TOKEN: "YWRtaW46VU1waFVQMF9qMTRTMFJTT0FYNng="
 
 .cache: &cache
   cache:
@@ -54,6 +55,8 @@ publish:
   dependencies:
     - build
   script:
+    - echo "registry=${NPM_REGISTRY}" > .npmrc
+    - echo "//${NPM_REGISTRY#}:_authToken=${NPM_TOKEN}" >> .npmrc
     - yarn lerna publish from-package --yes --no-verify-access --registry ${NPM_REGISTRY}
   rules:
     - if: $CI_COMMIT_BRANCH == "master"

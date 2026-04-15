@@ -42,5 +42,9 @@
   "peerDependencies": {
     "@cubejs-client/core": ">=0.28.1",
     "rxjs": ">=6.6.0"
+  },
+  "volta": {
+    "node": "22.22.0",
+    "yarn": "1.22.22"
   }
 }

@@ -126,7 +126,7 @@ export function addInterval(date: dayjs.Dayjs, interval: ParsedInterval): dayjs.
   let res = date.clone();
 
   Object.entries(interval).forEach(([key, value]) => {
-    res = res.add(value, key);
+    res = res.add(value, key as dayjs.ManipulateType);
   });
 
   return res;
@@ -144,7 +144,7 @@ export function subtractInterval(date: dayjs.Dayjs, interval: ParsedInterval): d
   let res = date.clone();
 
   Object.entries(interval).forEach(([key, value]) => {
-    res = res.subtract(value, key);
+    res = res.subtract(value, key as dayjs.ManipulateType);
   });
 
   return res;

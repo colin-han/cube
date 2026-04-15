@@ -608,7 +608,7 @@ export class DevServer {
       const { payload = {} } = req.body;
       const jwtOptions = typeof payload.exp != null ? {} : { expiresIn: '1d' };
 
-      const token = jwt.sign(payload, options.apiSecret, jwtOptions);
+      const token = jwt.sign(payload, options.apiSecret, jwtOptions as jwt.SignOptions);
 
       res.json({ token });
     }));

@@ -13,5 +13,9 @@
   "devDependencies": {
     "@cubejs-backend/postgres-driver": "^0.31.3",
     "@cubejs-backend/server": "^0.31.3"
+  },
+  "volta": {
+    "node": "22.22.0",
+    "yarn": "1.22.22"
   }
 }

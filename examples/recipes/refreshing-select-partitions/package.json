@@ -4,5 +4,9 @@
   "dependencies": {
     "pg": "^8.7.1"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "volta": {
+    "node": "22.22.0",
+    "yarn": "1.22.22"
+  }
 }

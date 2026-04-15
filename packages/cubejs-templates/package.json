@@ -43,5 +43,9 @@
   "devDependencies": {
     "@cubejs-backend/linter": "1.6.36",
     "typescript": "~5.2.2"
+  },
+  "volta": {
+    "node": "22.22.0",
+    "yarn": "1.22.22"
   }
 }

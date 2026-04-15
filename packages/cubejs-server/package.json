@@ -85,5 +85,9 @@
     "plugins": [
       "@oclif/plugin-help"
     ]
+  },
+  "volta": {
+    "node": "22.22.0",
+    "yarn": "1.22.22"
   }
 }

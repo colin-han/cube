@@ -41,5 +41,9 @@
   },
   "peerDependencies": {
     "react": ">=16.10.2"
+  },
+  "volta": {
+    "node": "22.22.0",
+    "yarn": "1.22.22"
   }
 }

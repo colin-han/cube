@@ -70,8 +70,13 @@
     "lodash": "^4.17.0",
     "@types/node": "^20",
     "@types/ramda": "0.27.40",
+    "@types/minimatch": "^5.1.2",
     "thrift": "0.20.0"
   },
   "license": "MIT",
-  "packageManager": "yarn@1.22.19"
+  "packageManager": "yarn@1.22.19",
+  "volta": {
+    "node": "22.22.0",
+    "yarn": "1.22.22"
+  }
 }
