@@ -35,8 +35,8 @@ build:
     policy: pull-push
   script:
     - node -v
-    - npm config list -l
-    - env | grep npm_config
+    - cat /home/gitlab-runner/.npmrc || true
+    - yarn config list || true
     - yarn install --frozen-lockfile
     - yarn build
   artifacts:
