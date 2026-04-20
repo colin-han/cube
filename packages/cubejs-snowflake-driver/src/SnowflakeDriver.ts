@@ -973,8 +973,12 @@ export class SnowflakeDriver extends BaseDriver implements DriverInterface {
     });
   }
 
-  protected generateHydrationMap(columns: Column[]): HydrationMap {
+  protected generateHydrationMap(columns?: Column[]): HydrationMap {
     const hydrationMap: Record<string, any> = {};
+
+    if (!columns) {
+      return hydrationMap;
+    }
 
     for (const column of columns) {
       for (const hydrator of hydrators) {
