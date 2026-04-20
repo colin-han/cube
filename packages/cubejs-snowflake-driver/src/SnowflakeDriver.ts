@@ -952,7 +952,7 @@ export class SnowflakeDriver extends BaseDriver implements DriverInterface {
   }
 
   private getTypes(stmt: RowStatement) {
-    return stmt.getColumns().map((column) => {
+    return stmt.getColumns()!.map((column) => {
       const type = {
         name: column.getName().toLowerCase(),
         type: '',
