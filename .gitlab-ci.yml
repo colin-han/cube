@@ -60,6 +60,7 @@ publish:
   script:
     - echo "registry=${NPM_REGISTRY}" > .npmrc
     - echo "//${NPM_REGISTRY#}:_authToken=${NPM_TOKEN}" >> .npmrc
+    - yarn install --frozen-lockfile
     - yarn lerna publish from-package --yes --no-verify-access --registry ${NPM_REGISTRY}
   # rules:
   #   - if: $CI_COMMIT_BRANCH == "master"
