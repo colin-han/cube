@@ -87,7 +87,7 @@ function OperatorSelector(props: OperatorSelectorProps) {
       size="small"
       listBoxStyles={{ height: 'auto' }}
       selectedKey={value}
-      onSelectionChange={(operator: Key) => onChange(operator as UnaryOperator | BinaryOperator)}
+      onSelectionChange={(operator: Key | null) => onChange(operator as UnaryOperator | BinaryOperator)}
     >
       {OPERATORS_BY_TYPE[type || 'all']?.map((operator) => {
         return (

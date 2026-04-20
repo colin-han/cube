@@ -69,7 +69,7 @@ export function DateRangeFilter(props: TimeDimensionFilterProps) {
   // );
 
   const onDateRangeChange = useCallback(
-    (dateRange?: Key) => {
+    (dateRange?: Key | null) => {
       if (dateRange === 'custom') {
         onChange([formatDate(new Date(), 'yyyy-MM-dd'), formatDate(new Date(), 'yyyy-MM-dd')]);
 

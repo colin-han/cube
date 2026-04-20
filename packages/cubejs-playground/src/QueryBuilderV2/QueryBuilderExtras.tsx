@@ -604,7 +604,7 @@ export function QueryBuilderLimitSelect() {
         />
       }
       selectedKey={query.limit == null ? '0' : String(query.limit)}
-      onSelectionChange={(val: Key) => {
+      onSelectionChange={(val: Key|null) => {
         updateQuery(() => ({ limit: val === '0' ? undefined : Number(val as string) }));
         close();
       }}
