@@ -34,6 +34,9 @@ build:
       - .yarn-cache/
     policy: pull-push
   script:
+    - node -v
+    - npm config list -l
+    - env | grep npm_config
     - yarn install --frozen-lockfile
     - yarn build
   artifacts:
