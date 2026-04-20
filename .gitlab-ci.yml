@@ -34,6 +34,8 @@ build:
       - .yarn-cache/
     policy: pull-push
   script:
+    - yarn config delete 'http://172.20.21.36:8081/repository/npm-private/'
+    - yarn config delete 'https://registry.npmjs.org/'
     - node -v
     - cat /home/gitlab-runner/.npmrc || true
     - yarn config list || true
