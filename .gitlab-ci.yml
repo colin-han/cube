@@ -35,8 +35,7 @@ build:
     policy: pull-push
   script:
     - yarn install --frozen-lockfile
-    - yarn tsc
-    - yarn lerna run build --stream --ignore 'cubejs-testing*' --ignore 'cubejs-linter' --ignore 'cubejs-docker'
+    - yarn build
   artifacts:
     paths:
       - packages/*/dist/
