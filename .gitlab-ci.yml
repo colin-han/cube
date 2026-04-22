@@ -34,21 +34,27 @@ build:
       - .yarn-cache/
     policy: pull-push
   script:
-    - yarn config delete 'http://172.20.21.36:8081/repository/npm-private/'
-    - yarn config delete 'https://registry.npmjs.org/'
-    - node -v
-    - cat /home/gitlab-runner/.npmrc || true
-    - yarn config list || true
+    - echo "registry=https://registry.npmjs.org/" > .npmrc
     - yarn install --frozen-lockfile
+    - yarn tsc
     - yarn build
+    - cd packages/cubejs-playground && SKIP_PREFLIGHT_CHECK=true yarn build:playground
   artifacts:
     paths:
       - packages/*/dist/
       - packages/*/lib/
+      - packages/cubejs-server-core/playground/
+      - rust/*/dist/
     expire_in: 1 hour
 
 
 # ── Publish to npm ───────────────────────────────────────────────────────────
+# Only publish packages needed for: @cubejs-backend/server + clickhouse-driver
+# Full dependency tree (14 packages):
+#   shared → base-driver → clickhouse-driver
+#   cubesql (rust) → native → schema-compiler
+#   cubestore (rust) → cubestore-driver → query-orchestrator → api-gateway → server-core → server
+#   cloud, templates → server-core
 
 publish:
   stage: publish
@@ -59,8 +65,11 @@ publish:
     - build
   script:
     - echo "registry=${NPM_REGISTRY}" > .npmrc
-    - echo "//${NPM_REGISTRY#}:_authToken=${NPM_TOKEN}" >> .npmrc
+    - echo "//${NPM_REGISTRY#http://}:_authToken=${NPM_TOKEN}" >> .npmrc
     - yarn install --frozen-lockfile
-    - yarn lerna publish from-package --yes --no-verify-access --registry ${NPM_REGISTRY}
+    - >
+      yarn lerna publish from-package --yes --no-verify-access
+      --registry ${NPM_REGISTRY}
+      --scope '@cubejs-backend/{shared,base-driver,cubesql,cubestore,native,templates,cloud,schema-compiler,cubestore-driver,query-orchestrator,api-gateway,server-core,server,clickhouse-driver}'
   # rules:
   #   - if: $CI_COMMIT_BRANCH == "master"
