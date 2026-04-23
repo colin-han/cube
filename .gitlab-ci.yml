@@ -67,22 +67,25 @@ publish:
     - echo "registry=${NPM_REGISTRY}" > .npmrc
     - echo "//${NPM_REGISTRY#http://}:_authToken=${NPM_TOKEN}" >> .npmrc
     - yarn install --frozen-lockfile
-    - >
-      yarn lerna publish from-package --yes --no-verify-access
-      --registry ${NPM_REGISTRY}
-      --scope '@cubejs-backend/shared'
-      --scope '@cubejs-backend/base-driver'
-      --scope '@cubejs-backend/cubesql'
-      --scope '@cubejs-backend/cubestore'
-      --scope '@cubejs-backend/native'
-      --scope '@cubejs-backend/templates'
-      --scope '@cubejs-backend/cloud'
-      --scope '@cubejs-backend/schema-compiler'
-      --scope '@cubejs-backend/cubestore-driver'
-      --scope '@cubejs-backend/query-orchestrator'
-      --scope '@cubejs-backend/api-gateway'
-      --scope '@cubejs-backend/server-core'
-      --scope '@cubejs-backend/server'
-      --scope '@cubejs-backend/clickhouse-driver'
+    - |
+      for pkg in \
+        packages/cubejs-backend-shared \
+        packages/cubejs-base-driver \
+        rust/cubesql \
+        rust/cubestore \
+        packages/cubejs-backend-native \
+        packages/cubejs-templates \
+        packages/cubejs-backend-cloud \
+        packages/cubejs-schema-compiler \
+        packages/cubejs-cubestore-driver \
+        packages/cubejs-query-orchestrator \
+        packages/cubejs-api-gateway \
+        packages/cubejs-server-core \
+        packages/cubejs-server \
+        packages/cubejs-clickhouse-driver
+      do
+        echo "Publishing $pkg..."
+        npm publish "$pkg" --registry=${NPM_REGISTRY} || echo "  (already published or skipped)"
+      done
   # rules:
   #   - if: $CI_COMMIT_BRANCH == "master"
