@@ -70,6 +70,19 @@ publish:
     - >
       yarn lerna publish from-package --yes --no-verify-access
       --registry ${NPM_REGISTRY}
-      --scope '@cubejs-backend/{shared,base-driver,cubesql,cubestore,native,templates,cloud,schema-compiler,cubestore-driver,query-orchestrator,api-gateway,server-core,server,clickhouse-driver}'
+      --scope '@cubejs-backend/shared'
+      --scope '@cubejs-backend/base-driver'
+      --scope '@cubejs-backend/cubesql'
+      --scope '@cubejs-backend/cubestore'
+      --scope '@cubejs-backend/native'
+      --scope '@cubejs-backend/templates'
+      --scope '@cubejs-backend/cloud'
+      --scope '@cubejs-backend/schema-compiler'
+      --scope '@cubejs-backend/cubestore-driver'
+      --scope '@cubejs-backend/query-orchestrator'
+      --scope '@cubejs-backend/api-gateway'
+      --scope '@cubejs-backend/server-core'
+      --scope '@cubejs-backend/server'
+      --scope '@cubejs-backend/clickhouse-driver'
   # rules:
   #   - if: $CI_COMMIT_BRANCH == "master"
